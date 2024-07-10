@@ -1,0 +1,9 @@
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            // Version catalog must be imported here if want to use versions also in buildSrc gradle files
+            // https://docs.gradle.org/current/userguide/platforms.html#sec:sharing-catalogs
+            from(files("../gradle/libs.versions.toml"))
+        }
+    }
+}
