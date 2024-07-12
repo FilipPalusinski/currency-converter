@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sending_from_label">Sending from</string>
+    <string name="receiver_gets_label">Receiver gets</string>
+
+</resources>

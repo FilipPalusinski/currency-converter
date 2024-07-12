@@ -13,6 +13,7 @@ activityCompose = "1.9.0"
 composeBom = "2024.04.01"
 appcompat = "1.7.0"
 material = "1.10.0"
+compose-material = "1.6.8"
 composeCompiler = "1.5.1"
 lifecycle = "2.7.0"
 coroutines = "1.7.3"
@@ -27,6 +28,7 @@ javapoet = { module = "com.squareup:javapoet", version.ref = "javapoet" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+compose-material-icons = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose-material" }
 androidx-lifecycle-runtimeCompose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
@@ -36,6 +38,7 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 desugaring-core = { group = "com.android.tools", name = "desugar_jdk_libs", version = "2.0.4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+compose-material = { module = "androidx.compose.material:material", version.ref = "compose-material" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
