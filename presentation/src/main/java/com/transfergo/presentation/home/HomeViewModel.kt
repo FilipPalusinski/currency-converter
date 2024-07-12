@@ -58,7 +58,7 @@ class HomeViewModel @Inject constructor(
         }
         if (rateResult.isNotEmpty()) {
             _uiState.update { it.copy(rateResult = rateResult) }
-            onRateValueTextChangeFromSendingConvert()
+            onRateValueTextChange()
         }
     }
 
@@ -99,7 +99,7 @@ class HomeViewModel @Inject constructor(
             }
         }
         if (rateResult.isNotEmpty()) {
-            onRateValueTextChangeFromSendingConvert()
+            onRateValueTextChange()
         }
     }
 
@@ -126,7 +126,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun onRateValueTextChangeFromSendingConvert() {
+    private fun onRateValueTextChange() {
         val sendingCurrency = _uiState.value.sendingCurrency
         val rate = _uiState.value.rateResult
         val receiverCurrency = _uiState.value.receiverCurrency
@@ -136,7 +136,37 @@ class HomeViewModel @Inject constructor(
             )
         }
     }
+
+    fun onShowSenderOverlay() {
+        _uiState.update { it.copy(senderCurrencyOverlayVisibility = true) }
+    }
+
+    fun onShowReceievrOverlay() {
+        _uiState.update { it.copy(receiverCurrencyOverlayVisibility = true) }
+    }
+
+    fun onCurrencyChangeFromSendingConvertCard(selectedCountry: Country) {
+        _uiState.update {
+            it.copy(
+                senderCurrencyOverlayVisibility = false,
+                sendingCurrency = selectedCountry.currency
+            )
+        }
+        refreshApiCall()
+    }
+
+    fun onCurrencyChangeFromReceiverConvertCard(selectedCountry: Country) {
+        _uiState.update {
+            it.copy(
+                receiverCurrencyOverlayVisibility = false,
+                receiverCurrency = selectedCountry.currency
+            )
+        }
+        refreshApiCall()
+    }
+
 }
+
 
 data class HomeState(
     val apiError: String? = "",
@@ -145,5 +175,7 @@ data class HomeState(
     val sendingFromValueText: String = "0.00",
     val receiverGetsValueText: String = "0.00",
     val sendingCurrency: String = "PLN",
-    val receiverCurrency: String = "UAH"
+    val receiverCurrency: String = "UAH",
+    val senderCurrencyOverlayVisibility: Boolean = false,
+    val receiverCurrencyOverlayVisibility: Boolean = false
 )

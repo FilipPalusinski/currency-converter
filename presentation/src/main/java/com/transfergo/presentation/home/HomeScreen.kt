@@ -18,6 +18,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -54,9 +55,20 @@ fun CurrencyConverterRoute(
         onSwapCurrencyClick = homeViewModel::swapCurrency,
         updateSendingFromText = homeViewModel::updateSendingFromText,
         updateReceiverFromText = homeViewModel::updateReceiverFromText,
+        onShowSenderOverlay = homeViewModel::onShowSenderOverlay,
+        onShowReceiverOverlay = homeViewModel::onShowReceievrOverlay,
         modifier = modifier
     )
 
+    CurrencyOverlay(
+        visible = uiState.senderCurrencyOverlayVisibility,
+        onCurrencyClick = homeViewModel::onCurrencyChangeFromSendingConvertCard
+    )
+
+    CurrencyOverlay(
+        visible = uiState.receiverCurrencyOverlayVisibility,
+        onCurrencyClick = homeViewModel::onCurrencyChangeFromReceiverConvertCard
+    )
 }
 
 @Composable
@@ -65,6 +77,8 @@ fun DoubleLayeredCard(
     onSwapCurrencyClick: () -> Unit,
     updateSendingFromText: (String) -> Unit,
     updateReceiverFromText: (String) -> Unit,
+    onShowSenderOverlay: () -> Unit,
+    onShowReceiverOverlay: () -> Unit,
     modifier: Modifier
 ) {
     Card(
@@ -77,8 +91,16 @@ fun DoubleLayeredCard(
     ) {
         Box(contentAlignment = Alignment.TopCenter) {
             Column {
-                FirstInnerCard(uiState, updateSendingFromText)
-                SecondInnerCard(uiState, updateReceiverFromText)
+                FirstInnerCard(
+                    uiState = uiState,
+                    updateSendingFromText = updateSendingFromText,
+                    onShowSenderOverlay = onShowSenderOverlay
+                )
+                SecondInnerCard(
+                    uiState = uiState,
+                    updateReceiverFromText = updateReceiverFromText,
+                    onShowReceiverOverlay = onShowReceiverOverlay
+                )
             }
             SwapButton(
                 modifier = Modifier
@@ -101,6 +123,7 @@ fun DoubleLayeredCard(
 fun FirstInnerCard(
     uiState: HomeState,
     updateSendingFromText: (String) -> Unit,
+    onShowSenderOverlay: () -> Unit,
 ) {
     Card(
         modifier = Modifier
@@ -129,6 +152,10 @@ fun FirstInnerCard(
                         Spacer(modifier = Modifier.width(10.dp))
 
                         Text(uiState.sendingCurrency, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        ChooseButton(
+                            onClick = onShowSenderOverlay,
+                            modifier = Modifier
+                        )
                     }
                 }
                 Box(
@@ -157,15 +184,14 @@ fun FirstInnerCard(
 
 @Composable
 fun getCurrencyFlag(currency: String): Painter {
-    return painterResource(
-        id = when (currency) {
-            "PLN" -> R.drawable.flag_pl
-            "UAH" -> R.drawable.flag_ua
-            "GBP" -> R.drawable.flag_uk
-            "EUR" -> R.drawable.flag_de
-            else -> throw IllegalArgumentException("Unsupported currency: $currency")
-        }
-    )
+    val country = when (currency) {
+        Country.Poland.currency -> Country.Poland
+        Country.Ukraine.currency -> Country.Ukraine
+        Country.GreatBritain.currency -> Country.GreatBritain
+        Country.Germany.currency -> Country.Germany
+        else -> throw IllegalArgumentException("Unsupported currency: $currency")
+    }
+    return painterResource(id = country.flagRes)
 }
 
 @Composable
@@ -192,7 +218,8 @@ fun PlainTextEdit(
 fun SecondInnerCard(
     uiState: HomeState,
     updateReceiverFromText: (String) -> Unit,
-) {
+    onShowReceiverOverlay: () -> Unit,
+    ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -218,6 +245,10 @@ fun SecondInnerCard(
                         Spacer(modifier = Modifier.width(10.dp))
 
                         Text(uiState.receiverCurrency, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        ChooseButton(
+                            onClick = onShowReceiverOverlay,
+                            modifier = Modifier
+                        )
                     }
                 }
                 Box(
@@ -254,6 +285,23 @@ fun SwapButton(modifier: Modifier, onClick: () -> Unit) {
             imageVector = Icons.Filled.SwapVert,
             contentDescription = "Swap",
             tint = Color.White,
+            modifier = Modifier.size(18.dp)
+        )
+    }
+}
+
+@Composable
+fun ChooseButton(modifier: Modifier, onClick: () -> Unit) {
+    IconButton(
+        onClick = onClick,
+        modifier = modifier
+            .size(25.dp)
+            .padding(bottom = 6.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Filled.KeyboardArrowDown,
+            contentDescription = "Choose",
+            tint = Color.Gray,
             modifier = Modifier.size(18.dp)
         )
     }
