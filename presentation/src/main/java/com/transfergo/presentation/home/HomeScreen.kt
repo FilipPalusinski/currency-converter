@@ -2,6 +2,7 @@ package com.transfergo.presentation.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -50,15 +51,25 @@ fun CurrencyConverterRoute(
 ) {
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
 
-    DoubleLayeredCard(
-        uiState = uiState,
-        onSwapCurrencyClick = homeViewModel::swapCurrency,
-        updateSendingFromText = homeViewModel::updateSendingFromText,
-        updateReceiverFromText = homeViewModel::updateReceiverFromText,
-        onShowSenderOverlay = homeViewModel::onShowSenderOverlay,
-        onShowReceiverOverlay = homeViewModel::onShowReceievrOverlay,
-        modifier = modifier
-    )
+    Column() {
+        DoubleLayeredCard(
+            uiState = uiState,
+            onSwapCurrencyClick = homeViewModel::swapCurrency,
+            updateSendingFromText = homeViewModel::updateSendingFromText,
+            updateReceiverFromText = homeViewModel::updateReceiverFromText,
+            onShowSenderOverlay = homeViewModel::onShowSenderOverlay,
+            onShowReceiverOverlay = homeViewModel::onShowReceievrOverlay,
+            modifier = modifier
+        )
+        Row(
+            modifier = modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+
+        ) {
+            LimitAlert(limit = uiState.limitAlertText)
+        }
+    }
 
     CurrencyOverlay(
         visible = uiState.senderCurrencyOverlayVisibility,
@@ -164,6 +175,8 @@ fun FirstInnerCard(
                         .fillMaxWidth()
                 ) {
 
+
+
                     PlainTextEdit(
                         text = uiState.sendingFromValueText,
                         onTextChange = updateSendingFromText,
@@ -172,7 +185,7 @@ fun FirstInnerCard(
                             .align(Alignment.CenterEnd),
                         textStyle = TextStyle(fontWeight = FontWeight.Bold),
                         fontSize = 40.sp,
-                        textColor = Color.Blue
+                        textColor = if (uiState.limitAlertText.isNotEmpty()) Color.Red else Color.Blue
                     )
 
 
@@ -219,7 +232,7 @@ fun SecondInnerCard(
     uiState: HomeState,
     updateReceiverFromText: (String) -> Unit,
     onShowReceiverOverlay: () -> Unit,
-    ) {
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -315,6 +328,19 @@ fun RateInfoText(text: String, modifier: Modifier) {
             .padding(horizontal = 5.dp)
     ) {
         Text(text = text, color = Color.White, fontSize = 14.sp)
+    }
+}
+
+@Composable
+fun LimitAlert(limit: String, modifier: Modifier = Modifier) {
+    if (limit.isNotEmpty()) {
+        Box(
+            modifier = modifier
+                .background(Color(0x65FF8080), RoundedCornerShape(percent = 50))
+                .padding(horizontal = 5.dp)
+        ) {
+            Text(text = "Maximum sending amount: $limit", color = Color.Red, fontSize = 14.sp)
+        }
     }
 }
 

@@ -20,6 +20,13 @@ class HomeViewModel @Inject constructor(
         MutableStateFlow(HomeState())
     val uiState: StateFlow<HomeState> = _uiState.asStateFlow()
 
+    val limits = mapOf(
+        "PLN" to 20000.0,
+        "EUR" to 5000.0,
+        "GBP" to 1000.0,
+        "UAH" to 50000.0
+    )
+
     fun updateSendingFromText(newText: String) {
         _uiState.update {
             it.copy(sendingFromValueText = newText)
@@ -28,9 +35,19 @@ class HomeViewModel @Inject constructor(
         val sendingCurrency = _uiState.value.sendingCurrency
         val receiverCurrency = _uiState.value.receiverCurrency
         if (amount != null) {
+            checkLimitRange(amount, sendingCurrency)
             viewModelScope.launch {
                 sendingCurrencyConvert(sendingCurrency, receiverCurrency, amount)
             }
+        }
+    }
+
+    fun checkLimitRange(amount: Float, currency: String) {
+        val limit = limits[currency]
+        if (limit != null && amount > limit) {
+            onLimitOutOfRange(limit.toString(), currency)
+        } else {
+            resetLimitAlertText()
         }
     }
 
@@ -70,6 +87,7 @@ class HomeViewModel @Inject constructor(
         val sendingCurrency = _uiState.value.sendingCurrency
         val receiverCurrency = _uiState.value.receiverCurrency
         if (amount != null) {
+
             viewModelScope.launch {
                 receiverCurrencyConvert(receiverCurrency, sendingCurrency, amount)
             }
@@ -79,6 +97,8 @@ class HomeViewModel @Inject constructor(
     private suspend fun receiverCurrencyConvert(from: String, to: String, amount: Float) = viewModelScope.launch {
         val result = conversionRepository.convertCurrency(from, to, amount)
         var amountResult = result.data?.toAmount.toString()
+        val sendingCurrency = _uiState.value.sendingCurrency
+
         var rateResult = result.data?.rate.let {
             String.format("%.2f", it)
         }
@@ -98,6 +118,8 @@ class HomeViewModel @Inject constructor(
                 )
             }
         }
+        checkLimitRange(amountResult.toFloat(), sendingCurrency)
+
         if (rateResult.isNotEmpty()) {
             onRateValueTextChange()
         }
@@ -120,6 +142,7 @@ class HomeViewModel @Inject constructor(
         val sendingCurrency = _uiState.value.sendingCurrency
         val receiverCurrency = _uiState.value.receiverCurrency
         if (amount != null) {
+            checkLimitRange(amount, sendingCurrency)
             viewModelScope.launch {
                 sendingCurrencyConvert(sendingCurrency, receiverCurrency, amount)
             }
@@ -165,8 +188,22 @@ class HomeViewModel @Inject constructor(
         refreshApiCall()
     }
 
-}
+    fun onLimitOutOfRange(range: String, currency: String) {
+        _uiState.update {
+            it.copy(
+                limitAlertText = "$range $currency"
+            )
+        }
+    }
 
+    fun resetLimitAlertText() {
+        _uiState.update {
+            it.copy(
+                limitAlertText = ""
+            )
+        }
+    }
+}
 
 data class HomeState(
     val apiError: String? = "",
@@ -177,5 +214,6 @@ data class HomeState(
     val sendingCurrency: String = "PLN",
     val receiverCurrency: String = "UAH",
     val senderCurrencyOverlayVisibility: Boolean = false,
-    val receiverCurrencyOverlayVisibility: Boolean = false
+    val receiverCurrencyOverlayVisibility: Boolean = false,
+    val limitAlertText: String = ""
 )
