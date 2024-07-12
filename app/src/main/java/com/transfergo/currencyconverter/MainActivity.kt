@@ -24,7 +24,6 @@ class MainActivity : ComponentActivity() {
             CurrencyConverterTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        name = "Test",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }

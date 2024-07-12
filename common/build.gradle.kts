@@ -7,12 +7,10 @@ plugins {
 }
 
 android {
-    namespace = "com.transfergo.domain"
-
+    namespace = "com.transfergo.common"
 }
 
 dependencies {
-    implementation(project(":common"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
