@@ -56,7 +56,7 @@ class HomeViewModel @Inject constructor(
                 )
             }
         }
-        if(rateResult.isNotEmpty()){
+        if (rateResult.isNotEmpty()) {
             _uiState.update { it.copy(rateResult = rateResult) }
             onRateValueTextChangeFromSendingConvert()
         }
@@ -88,7 +88,6 @@ class HomeViewModel @Inject constructor(
         _uiState.update { currentState ->
             when (result) {
                 is Resource.Success -> currentState.copy(
-
                     sendingFromValueText = amountResult,
                     apiError = ""
                 )
@@ -99,7 +98,7 @@ class HomeViewModel @Inject constructor(
                 )
             }
         }
-        if(rateResult.isNotEmpty()){
+        if (rateResult.isNotEmpty()) {
             onRateValueTextChangeFromSendingConvert()
         }
     }
@@ -137,11 +136,7 @@ class HomeViewModel @Inject constructor(
             )
         }
     }
-
 }
-
-
-
 
 data class HomeState(
     val apiError: String? = "",

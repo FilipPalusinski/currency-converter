@@ -83,11 +83,10 @@ fun DoubleLayeredCard(
             SwapButton(
                 modifier = Modifier
                     .align(Alignment.CenterStart)
-                    .padding(start = 50.dp)
-                ,
+                    .padding(start = 50.dp),
                 onClick = onSwapCurrencyClick
             )
-            if(uiState.rateValueText.isNotEmpty()) {
+            if (uiState.rateValueText.isNotEmpty()) {
                 RateInfoText(
                     text = uiState.rateValueText,
                     modifier = Modifier
@@ -124,12 +123,12 @@ fun FirstInnerCard(
                     Row() {
                         Image(
                             painter = getCurrencyFlag(uiState.sendingCurrency),
-                            contentDescription = "PLN Flag",
+                            contentDescription = "Flag",
                             modifier = Modifier.size(24.dp)
                         )
                         Spacer(modifier = Modifier.width(10.dp))
 
-                        Text("PLN", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Text(uiState.sendingCurrency, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                     }
                 }
                 Box(
@@ -158,13 +157,15 @@ fun FirstInnerCard(
 
 @Composable
 fun getCurrencyFlag(currency: String): Painter {
-    return painterResource(id = when (currency) {
-        "PLN" -> R.drawable.flag_pl
-        "UAH" -> R.drawable.flag_ua
-        "GBP" -> R.drawable.flag_uk
-        "EUR" -> R.drawable.flag_de
-        else -> throw IllegalArgumentException("Unsupported currency: $currency")
-    })
+    return painterResource(
+        id = when (currency) {
+            "PLN" -> R.drawable.flag_pl
+            "UAH" -> R.drawable.flag_ua
+            "GBP" -> R.drawable.flag_uk
+            "EUR" -> R.drawable.flag_de
+            else -> throw IllegalArgumentException("Unsupported currency: $currency")
+        }
+    )
 }
 
 @Composable
@@ -191,7 +192,7 @@ fun PlainTextEdit(
 fun SecondInnerCard(
     uiState: HomeState,
     updateReceiverFromText: (String) -> Unit,
-    ) {
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -211,12 +212,12 @@ fun SecondInnerCard(
                     Row() {
                         Image(
                             painter = getCurrencyFlag(uiState.receiverCurrency),
-                            contentDescription = "PLN Flag",
+                            contentDescription = "Flag",
                             modifier = Modifier.size(24.dp)
                         )
                         Spacer(modifier = Modifier.width(10.dp))
 
-                        Text("PLN", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Text(uiState.receiverCurrency, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                     }
                 }
                 Box(
